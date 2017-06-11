@@ -1,0 +1,100 @@
+--retrieve customer data
+SELECT * FROM SalesLT.Customer;
+
+--create list of contacts
+SELECT Title, FirstName,MiddleName,LastName, Suffix
+FROM SalesLT.Customer;
+
+--create list of contacts (2)
+SELECT SalesPerson, Title + ' ' + LastName AS CustomerName,Phone
+FROM SalesLT.Customer;
+
+--retrieve customer and sales data
+SELECT ___(___ AS ___) + ': ' + ___ AS CustomerCompany
+FROM SalesLT.Customer;
+
+--retrieve customer and sales data (2)
+SELECT ___ + ' (' + STR(___, 1) + ')' AS OrderRevision,
+	   CONVERT(nvarchar(30), ___, ___) AS OrderDate
+FROM SalesLT.SalesOrderHeader;
+
+--retrieve customer contact names
+SELECT ___ + ' ' + ___(___ + ' ', '') + ___
+AS CustomerName
+FROM SalesLT.Customer;
+
+----retrieving contact details
+SELECT CustomerID,COALESCE (EmailAddress, Phone) AS PrimaryContact
+FROM SalesLT.Customer;
+
+--retrieving customer address
+SELECT c.CompanyName, a.AddressLine1, a.City,'Billing' AS AddressType
+FROM SalesLT.Customer AS c
+JOIN SalesLT.CustomerAddress AS ca
+ON c.CustomerID = ca.CustomerID
+JOIN SalesLT.Address AS a
+ON ca.AddressID = a.AddressID
+WHERE ca.AddressType = 'Main Office';
+
+--retrieving customer address(2)
+SELECT c.CompanyName, a.AddressLine1, a.City, 'Shipping' AS AddressType
+FROM SalesLT.Customer AS c
+JOIN SalesLT.CustomerAddress AS ca
+ON c.CustomerID = ca.CustomerID
+JOIN SalesLT.Address AS a
+ON ca.AddressID = a.AddressID
+WHERE ca.AddressType ='Shipping';
+
+--retrieving customer address(3)
+SELECT c.CompanyName, a.AddressLine1, a.City, 'Billing' AS AddressType
+FROM SalesLT.Customer AS c
+JOIN SalesLT.CustomerAddress AS ca
+ON c.CustomerID = ca.CustomerID
+JOIN SalesLT.Address AS a
+ON ca.AddressID = a.AddressID
+WHERE ca.AddressType = 'Main Office'
+UNION ALL
+SELECT c.CompanyName, a.AddressLine1, a.City, 'Shipping' AS AddressType
+FROM SalesLT.Customer AS c
+JOIN SalesLT.CustomerAddress AS ca
+ON c.CustomerID = ca.CustomerID
+JOIN SalesLT.Address AS a
+ON ca.AddressID = a.AddressID
+WHERE ca.AddressType = 'Shipping'
+ORDER BY c.CompanyName, AddressType;
+
+--filerting customer address(1)
+SELECT c.CompanyName
+FROM SalesLT.Customer AS c
+JOIN SalesLT.CustomerAddress AS ca
+ON c.CustomerID = ca.CustomerID
+JOIN SalesLT.Address AS a
+ON ca.AddressID = ca.AddressID
+WHERE ca.AddressType = 'Main Office'
+EXCEPT
+SELECT c.CompanyName
+FROM SalesLT.Customer AS c
+JOIN SalesLT.CustomerAddress AS ca
+ON c.CustomerID = ca.CustomerID
+JOIN SalesLT.Address AS a
+ON ca.AddressID = a.AddressID
+WHERE ca.AddressType = 'Shipping'
+ORDER BY c.CompanyName;
+
+--filtering customer address(2)
+SELECT c.CompanyName
+FROM SalesLT.Customer AS c
+JOIN SalesLT.CustomerAddress AS ca
+ON c.CustomerID = ca.CustomerID
+JOIN SalesLT.Address AS a
+ON c.CustomerID = ca.CustomerID
+WHERE ca.AddressType = 'Main Office'
+INTERSECT
+SELECT c.CompanyName
+FROM SalesLT.Customer AS c
+JOIN SalesLT.CustomerAddress AS ca
+ON c.CustomerID = ca.CustomerID
+JOIN SalesLT.Address AS a
+ON ca.AddressID = a.AddressID
+WHERE ca.AddressType = 'Shipping'
+ORDER BY c.CompanyName;
