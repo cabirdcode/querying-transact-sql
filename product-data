@@ -1,0 +1,55 @@
+--using functions in aggregating data
+--retrieving product data
+SELECT Name, Color, Size
+FROM SalesLT.Product
+WHERE ProductModelID = 1;
+
+--retrieving product data(2)
+SELECT ProductNumber, Name, Color, Size
+FROM SalesLT.Product
+WHERE COLOR IN ('Black','Red','White') AND SIZE IN ('S','M');
+
+--retrieving product data (3)
+SELECT ProductNumber, Name, ListPrice
+FROM SalesLT.Product
+WHERE ProductNumber LIKE 'BK-%';
+
+--retrieving product data (4)
+SELECT ProductNumber, Name, ListPrice
+FROM SalesLT.Product
+WHERE ProductNumber LIKE 'BK-[^R]%-[0-9][0-9]';
+
+--retrieving product info
+SELECT ProductID,
+UPPER(Name) AS ProductName, 
+ROUND(Weight, 0) AS ApproxWeight
+FROM SalesLT.Product;
+
+--retrieving product info (2)
+SELECT ProductID, UPPER(Name) AS ProductName,
+ROUND(Weight, 0) AS ApproxWeight,
+YEAR(SellStartDate) AS SellStartYear,
+DATENAME(mm,SellStartDate) AS SellStartMonth
+FROM SalesLT.Product;
+
+--retrieving product info (3)
+SELECT ProductID, Name, StandardCost, ListPrice,
+(SELECT AVG(UnitPrice)
+ FROM SalesLT.SalesOrderDetail AS sod
+ WHERE p.ProductID = sod.ProductID) AS AvgSellingPrice
+FROM SalesLT.Product AS P
+ORDER BY P.ProductID;
+
+--retrieving product info (4)
+SELECT ProductID, Name, StandardCost, ListPrice,
+(SELECT AVG(UnitPrice)
+ FROM SalesLT.SalesOrderDetail AS sod
+ WHERE p.ProductID = sod.ProductID) AS AvgUnitPrice
+FROM SalesLT.Product AS p
+WHERE StandardCost>
+(SELECT AVG(UnitPrice)
+ FROM SalesLT.SalesOrderDetail AS sod
+ WHERE p.ProductID= sod.ProductID)      
+ORDER BY p.ProductID;
+
+--using subqueries and apply
